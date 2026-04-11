@@ -20,6 +20,11 @@ public class ParkingController {
         this.parkingService = parkingService;
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "API WORKING";
+    }
+
     // ================= GET ALL =================
     @GetMapping
     public List<Parking> getAllParkings() {
