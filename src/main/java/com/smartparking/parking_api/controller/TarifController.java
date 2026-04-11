@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tarifs")
+@RequestMapping("/api/tarifs")
 public class TarifController {
 
     private final TarifService service;

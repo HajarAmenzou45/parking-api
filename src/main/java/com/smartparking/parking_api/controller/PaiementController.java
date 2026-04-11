@@ -30,7 +30,7 @@ public class PaiementController {
         return paiementService.getPaiementById(id);
     }
 
-    // 💰 PAYMENT (المهم)
+    // PAYMENT
     @PostMapping("/pay/{ticketId}")
     public Paiement pay(@PathVariable Integer ticketId,
                         @RequestParam MethodePayment method){
