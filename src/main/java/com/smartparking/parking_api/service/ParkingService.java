@@ -3,6 +3,7 @@ package com.smartparking.parking_api.service;
 import com.smartparking.parking_api.entity.Parking;
 import com.smartparking.parking_api.dto.ParkingResponse;
 import com.smartparking.parking_api.repository.ParkingRepository;
+import com.smartparking.parking_api.enums.VehiculeType;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -46,18 +47,18 @@ public class ParkingService {
 
     // ================= FILTER BY TYPE 🔥 =================
 
-    public List<Parking> getByType(String type){
-        return parkingRepository.findByType(type);
+    public List<Parking> getByType(VehiculeType type){
+        return parkingRepository.findByTypeVehicule(type);
     }
 
     // ================= NEARBY 🔥 =================
 
-    public List<ParkingResponse> getNearbyParkings(double lat, double lng, String type) {
+    public List<ParkingResponse> getNearbyParkings(double lat, double lng, VehiculeType type) {
 
         List<Parking> parkings;
 
         if(type != null){
-            parkings = parkingRepository.findByType(type);
+            parkings = parkingRepository.findByTypeVehicule(type);
         } else {
             parkings = parkingRepository.findAll();
         }

@@ -17,20 +17,17 @@ public class Vehicule {
     private Integer id;
 
     private String marque;
-
     private String modele;
 
-    @Column(name = "numeroPlaque", unique = true)
+    @Column(unique = true)
     private String numeroPlaque;
 
-    // relation avec utilisateur
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur_id")
-    @JsonIgnoreProperties({"vehicules"}) // باش ما يكونش boucle
+    @JsonIgnoreProperties({"vehicules"})
     private utilisateur utilisateur;
 
-    // enum type
+    // ✅
     @Enumerated(EnumType.STRING)
     private VehiculeType type;
-
 }
