@@ -1,8 +1,10 @@
 package com.smartparking.parking_api.entity;
 
-import com.smartparking.parking_api.enums.VehiculeType;
+import com.smartparking.parking_api.entity.VehiculeType;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,7 +25,12 @@ public class Parking {
     private Double longitude;
     private Double prixParHeure;
 
-    //  TYPE
-    @Enumerated(EnumType.STRING)
-    private VehiculeType typeVehicule;
+    // MULTI TYPES
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "parking_vehicle_type",
+            joinColumns = @JoinColumn(name = "parking_id"),
+            inverseJoinColumns = @JoinColumn(name = "vehicule_type_id")
+    )
+    private List<VehiculeType> types;
 }

@@ -1,6 +1,5 @@
 package com.smartparking.parking_api.entity;
 
-import com.smartparking.parking_api.enums.VehiculeType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,7 +26,7 @@ public class Vehicule {
     @JsonIgnoreProperties({"vehicules"})
     private utilisateur utilisateur;
 
-    // ✅
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "vehicule_type_id")
     private VehiculeType type;
 }

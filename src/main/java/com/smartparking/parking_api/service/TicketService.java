@@ -5,7 +5,6 @@ import com.smartparking.parking_api.entity.Vehicule;
 import com.smartparking.parking_api.entity.Place;
 import com.smartparking.parking_api.enums.StatutPlace;
 import com.smartparking.parking_api.enums.StatutTicket;
-import com.smartparking.parking_api.enums.VehiculeType;
 import com.smartparking.parking_api.repository.TicketRepository;
 import com.smartparking.parking_api.repository.VehiculeRepository;
 import com.smartparking.parking_api.repository.PlaceRepository;
@@ -97,21 +96,22 @@ public class TicketService {
         double pricePerHour = 3.0;
         double montant = hours * pricePerHour;
 
-        // 🔥 prix حسب type
-        VehiculeType type = ticket.getVehicule().getType();
+        String type = ticket.getVehicule().getType().getType();
+// الأولى = entity
+// الثانية = String (CAR / BIKE ...)
 
-        if (type == VehiculeType.TRUCK) {
+        if ("TRUCK".equals(type)) {
             montant *= 2;
-        } else if (type == VehiculeType.BIKE) {
+        } else if ("BIKE".equals(type)) {
             montant *= 0.5;
-        } else if (type == VehiculeType.EV) {
+        } else if ("EV".equals(type)) {
             montant *= 0.8;
         }
 
         ticket.setMontant(montant);
         ticket.setStatut(StatutTicket.FERME);
 
-        // ✅ تحرير place
+        //  place
         Place place = ticket.getPlace();
         place.setStatut(StatutPlace.LIBRE);
         placeRepository.save(place);
@@ -119,7 +119,7 @@ public class TicketService {
         return repository.save(ticket);
     }
 
-    // ✅ DELETE
+    //  DELETE
     public void delete(Long id) {
         repository.deleteById(id);
     }

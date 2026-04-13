@@ -2,7 +2,6 @@ package com.smartparking.parking_api.controller;
 
 import com.smartparking.parking_api.entity.Parking;
 import com.smartparking.parking_api.service.ParkingService;
-import com.smartparking.parking_api.enums.VehiculeType;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -49,7 +48,7 @@ public class ParkingController {
     }
 
     @GetMapping("/byType")
-    public List<Parking> getByType(@RequestParam VehiculeType type){
+    public List<Parking> getByType(@RequestParam String type){
         return parkingService.getByType(type);
     }
 
@@ -57,8 +56,8 @@ public class ParkingController {
     public List<ParkingResponse> getNearby(
             @RequestParam double lat,
             @RequestParam double lng,
-            @RequestParam(required = false) VehiculeType type){
-
+            @RequestParam(required = false) String type
+    ) {
         return parkingService.getNearbyParkings(lat, lng, type);
     }
 

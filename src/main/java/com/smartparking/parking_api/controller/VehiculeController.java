@@ -1,8 +1,9 @@
 package com.smartparking.parking_api.controller;
 
 import com.smartparking.parking_api.entity.Vehicule;
-import com.smartparking.parking_api.enums.VehiculeType;
+import com.smartparking.parking_api.entity.VehiculeType;
 import com.smartparking.parking_api.service.VehiculeService;
+import com.smartparking.parking_api.service.VehiculeTypeService;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +14,11 @@ import java.util.List;
 public class VehiculeController {
 
     private final VehiculeService service;
+    private final VehiculeTypeService typeService; //
 
-    public VehiculeController(VehiculeService service) {
+    public VehiculeController(VehiculeService service, VehiculeTypeService typeService) {
         this.service = service;
+        this.typeService = typeService;
     }
 
     // ✅ GET ALL
@@ -42,9 +45,9 @@ public class VehiculeController {
         service.delete(id);
     }
 
-    //  TYPES (important)
+    // TYPES (correct)
     @GetMapping("/types")
-    public VehiculeType[] getTypes() {
-        return VehiculeType.values();
+    public List<VehiculeType> getTypes() {
+        return typeService.getAllTypes();
     }
 }

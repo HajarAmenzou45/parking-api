@@ -3,7 +3,6 @@ package com.smartparking.parking_api.service;
 import com.smartparking.parking_api.entity.Parking;
 import com.smartparking.parking_api.dto.ParkingResponse;
 import com.smartparking.parking_api.repository.ParkingRepository;
-import com.smartparking.parking_api.enums.VehiculeType;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -45,37 +44,31 @@ public class ParkingService {
         parkingRepository.deleteById(id);
     }
 
-    // ================= FILTER BY TYPE 🔥 =================
+    // ================= FILTER BY TYPE  =================
 
-    public List<Parking> getByType(VehiculeType type){
-        return parkingRepository.findByTypeVehicule(type);
+
+    public List<Parking> getByType(String type){
+        return parkingRepository.findByType(type);
     }
-
-    // ================= NEARBY 🔥 =================
-
-    public List<ParkingResponse> getNearbyParkings(double lat, double lng, VehiculeType type) {
+    // ================= NEARBY  =================
+    public List<ParkingResponse> getNearbyParkings(double lat, double lng, String type) {
 
         List<Parking> parkings;
 
         if(type != null){
-            parkings = parkingRepository.findByTypeVehicule(type);
+            parkings = parkingRepository.findByType(type);
         } else {
             parkings = parkingRepository.findAll();
         }
 
         return parkings.stream()
-
                 .filter(p -> haversine(lat, lng, p.getLatitude(), p.getLongitude()) < 10)
-
                 .map(p -> {
                     double distance = getRealDistance(lat, lng, p.getLatitude(), p.getLongitude());
                     return new ParkingResponse(p, distance);
                 })
-
                 .sorted(Comparator.comparing(ParkingResponse::getDistance))
-
                 .limit(5)
-
                 .toList();
     }
 
@@ -122,4 +115,6 @@ public class ParkingService {
 
         return R * c;
     }
+
+
 }
