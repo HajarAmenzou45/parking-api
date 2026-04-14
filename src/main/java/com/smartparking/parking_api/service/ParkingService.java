@@ -46,9 +46,21 @@ public class ParkingService {
 
     // ================= FILTER BY TYPE  =================
 
-
+    // ================= FILTER BY TYPE =================
     public List<Parking> getByType(String type){
-        return parkingRepository.findByType(type);
+
+        if(type == null || type.isEmpty()){
+            return parkingRepository.findAll();
+        }
+
+        String finalType = type.trim().toUpperCase();
+
+        return parkingRepository.findAll().stream()
+                .filter(p -> p.getTypes() != null &&
+                        p.getTypes().stream()
+                                .anyMatch(t -> t.getType() != null &&
+                                        t.getType().trim().toUpperCase().equals(finalType)))
+                .toList();
     }
     // ================= NEARBY  =================
     public List<ParkingResponse> getNearbyParkings(double lat, double lng, String type) {

@@ -33,4 +33,5 @@ public class Parking {
             inverseJoinColumns = @JoinColumn(name = "vehicule_type_id")
     )
     private List<VehiculeType> types;
+
 }
