@@ -21,7 +21,8 @@ public class ParkingService {
         this.parkingRepository = parkingRepository;
     }
 
-    @Value("${ors.api.key}")
+    // ✅ API KEY (safe)
+    @Value("${ors.api.key:}")
     private String apiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -44,9 +45,8 @@ public class ParkingService {
         parkingRepository.deleteById(id);
     }
 
-    // ================= FILTER BY TYPE  =================
-
     // ================= FILTER BY TYPE =================
+
     public List<Parking> getByType(String type){
 
         if(type == null || type.isEmpty()){
@@ -62,13 +62,15 @@ public class ParkingService {
                                         t.getType().trim().toUpperCase().equals(finalType)))
                 .toList();
     }
-    // ================= NEARBY  =================
+
+    // ================= NEARBY =================
+
     public List<ParkingResponse> getNearbyParkings(double lat, double lng, String type) {
 
         List<Parking> parkings;
 
         if(type != null){
-            parkings = parkingRepository.findByType(type);
+            parkings = getByType(type); // ✅ استعملنا filter الصحيح
         } else {
             parkings = parkingRepository.findAll();
         }
@@ -84,9 +86,15 @@ public class ParkingService {
                 .toList();
     }
 
-    // ================= ORS =================
+    // ================= DISTANCE =================
 
     public double getRealDistance(double lat1, double lng1, double lat2, double lng2) {
+
+        // 🔥 أهم حماية
+        if(apiKey == null || apiKey.isEmpty()){
+            return haversine(lat1, lng1, lat2, lng2);
+        }
+
         try {
             String url = "https://api.openrouteservice.org/v2/directions/driving-car"
                     + "?api_key=" + apiKey
@@ -127,6 +135,4 @@ public class ParkingService {
 
         return R * c;
     }
-
-
 }
