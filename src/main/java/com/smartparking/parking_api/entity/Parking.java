@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,6 +33,6 @@ public class Parking {
             joinColumns = @JoinColumn(name = "parking_id"),
             inverseJoinColumns = @JoinColumn(name = "vehicule_type_id")
     )
-    private List<VehiculeType> types;
+    private Set<VehiculeType> types;
 
 }

@@ -10,8 +10,9 @@ import java.util.List;
 @Repository
 public interface ParkingRepository extends JpaRepository<Parking, Integer> {
 
-    // 🔥 FILTER BY TYPE (IMPORTANT)
+    // FILTER BY TYPE (IMPORTANT)
     @Query("SELECT DISTINCT p FROM Parking p JOIN p.types t WHERE t.type = :type")
     List<Parking> findByType(@Param("type") String type);
 
+    boolean existsByNomAndLatitudeAndLongitude(String nom, double latitude, double longitude);
 }

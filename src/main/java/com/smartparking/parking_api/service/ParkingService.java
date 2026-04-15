@@ -34,6 +34,15 @@ public class ParkingService {
     }
 
     public Parking saveParking(Parking parking) {
+
+        if (parkingRepository.existsByNomAndLatitudeAndLongitude(
+                parking.getNom(),
+                parking.getLatitude(),
+                parking.getLongitude())) {
+
+            throw new RuntimeException("Parking déjà existe");
+        }
+
         return parkingRepository.save(parking);
     }
 
@@ -59,7 +68,7 @@ public class ParkingService {
                 .filter(p -> p.getTypes() != null &&
                         p.getTypes().stream()
                                 .anyMatch(t -> t.getType() != null &&
-                                        t.getType().trim().toUpperCase().equals(finalType)))
+                                        t.getType().equalsIgnoreCase(finalType)))
                 .toList();
     }
 
@@ -70,7 +79,7 @@ public class ParkingService {
         List<Parking> parkings;
 
         if(type != null){
-            parkings = getByType(type); // ✅ استعملنا filter الصحيح
+            parkings = getByType(type);
         } else {
             parkings = parkingRepository.findAll();
         }
@@ -90,7 +99,6 @@ public class ParkingService {
 
     public double getRealDistance(double lat1, double lng1, double lat2, double lng2) {
 
-        // 🔥 أهم حماية
         if(apiKey == null || apiKey.isEmpty()){
             return haversine(lat1, lng1, lat2, lng2);
         }

@@ -24,8 +24,7 @@ public class ParkingResponse {
         this.latitude = p.getLatitude();
         this.longitude = p.getLongitude();
         this.prixParHeure = p.getPrixParHeure();
-        this.types = p.getTypes();
-        this.distance = distance;
+        this.types = p.getTypes() != null ? new java.util.ArrayList<>(p.getTypes()) : null;        this.distance = distance;
     }
 
     // getters
