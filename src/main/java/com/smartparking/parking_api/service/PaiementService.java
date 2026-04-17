@@ -40,16 +40,18 @@ public class PaiementService {
         repository.deleteById(id);
     }
 
-    // 💰 LOGIC PAYMENT (المهم)
+    // 💰 LOGIC PAYMENT (FIXED 🔥)
     public Paiement pay(Integer ticketId, MethodePayment method){
 
         Ticket ticket = ticketRepository.findById(ticketId.longValue())
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
+        // ❌ خاص ticket يكون مسدود
         if(ticket.getStatut() != StatutTicket.FERME){
             throw new RuntimeException("Ticket must be closed first");
         }
 
+        // ❌ إلى راه تخلص قبل
         if(ticket.getPaiement() != null){
             throw new RuntimeException("Already paid");
         }
@@ -66,8 +68,17 @@ public class PaiementService {
             paiement.setStatut(PaymentStatus.PAYE);
         }
 
-        return repository.save(paiement);
+        // 🔥🔥 أهم حاجة (حل المشكل ديالك)
+        ticket.setPaiement(paiement);
+
+        // save
+        repository.save(paiement);
+        ticketRepository.save(ticket);
+
+        return paiement;
     }
+
+    // 🔹 SAVE (optional)
     public Paiement save(Paiement paiement){
         return repository.save(paiement);
     }

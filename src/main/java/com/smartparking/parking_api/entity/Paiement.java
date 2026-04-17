@@ -25,6 +25,6 @@ public class Paiement {
     private PaymentStatus statut;
 
     @OneToOne
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
-
 }

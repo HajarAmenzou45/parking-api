@@ -16,16 +16,30 @@ public class PlaceController {
         this.placeService = placeService;
     }
 
+    // ✅ GET ALL + FILTER BY PARKING (optional)
     @GetMapping
-    public List<Place> getAllPlaces(){
+    public List<Place> getPlaces(@RequestParam(required = false) Long parkingId){
+
+        if(parkingId != null){
+            return placeService.getByParking(parkingId);
+        }
+
         return placeService.getAll();
     }
 
+    // ✅ GET BY ID
+    @GetMapping("/{id}")
+    public Place getPlaceById(@PathVariable Long id){
+        return placeService.getPlaceById(id);
+    }
+
+    // ✅ CREATE
     @PostMapping
     public Place create(@RequestBody Place place){
         return placeService.save(place);
     }
 
+    // ✅ UPDATE
     @PutMapping("/{id}")
     public Place updatePlace(@PathVariable Long id, @RequestBody Place place){
 
@@ -40,26 +54,15 @@ public class PlaceController {
         return placeService.save(place);
     }
 
-    @GetMapping("/{id}")
-    public Place getPlaceById(@PathVariable Long id){
-        return placeService.getPlaceById(id);
-    }
-
-
-
+    //  DELETE
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         placeService.delete(id);
     }
 
+    //  OPTIONAL (clean endpoint)
     @GetMapping("/byParking/{parkingId}")
     public List<Place> getByParking(@PathVariable Long parkingId){
         return placeService.getByParking(parkingId);
     }
 }
-
-
-
-
-
-

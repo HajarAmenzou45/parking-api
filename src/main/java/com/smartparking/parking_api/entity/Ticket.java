@@ -35,4 +35,6 @@ public class Ticket {
 
     @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
     private Paiement paiement;
+
+   
 }
