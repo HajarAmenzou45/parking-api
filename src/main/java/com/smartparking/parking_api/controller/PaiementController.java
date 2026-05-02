@@ -2,11 +2,13 @@ package com.smartparking.parking_api.controller;
 
 import com.smartparking.parking_api.entity.Paiement;
 import com.smartparking.parking_api.enums.PaymentStatus;
+import com.smartparking.parking_api.enums.MethodePayment;
 import com.smartparking.parking_api.service.PaiementService;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import com.smartparking.parking_api.enums.MethodePayment;
+
 @RestController
 @RequestMapping("/api/paiements")
 @CrossOrigin
@@ -30,18 +32,19 @@ public class PaiementController {
         return paiementService.getPaiementById(id);
     }
 
-    // PAYMENT
-    @PostMapping("/pay/{ticketId}")
-    public Paiement pay(@PathVariable Integer ticketId,
+    // 💰 PAYMENT (clean version)
+    @PostMapping("/pay")
+    public Paiement pay(@RequestParam Integer ticketId,
                         @RequestParam MethodePayment method){
+
         return paiementService.pay(ticketId, method);
     }
 
+    // 🔹 CONFIRM PAYMENT (pour EN_LIGNE)
     @PutMapping("/confirm/{id}")
     public Paiement confirm(@PathVariable Integer id){
 
         Paiement paiement = paiementService.getPaiementById(id);
-
         paiement.setStatut(PaymentStatus.PAYE);
 
         return paiementService.save(paiement);

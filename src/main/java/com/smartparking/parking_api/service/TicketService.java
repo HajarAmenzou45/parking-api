@@ -30,23 +30,23 @@ public class TicketService {
         this.placeRepository = placeRepository;
     }
 
-    // ✅ GET ALL
+    // GET ALL
     public List<Ticket> getAll() {
         return repository.findAll();
     }
-    // SAVE (create / update)
+
+    // SAVE
     public Ticket save(Ticket ticket) {
         return repository.save(ticket);
     }
 
-
-    // ✅ GET BY ID
+    // GET BY ID
     public Ticket getTicketById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
     }
 
-    // ✅ ENTRY 🚗
+    // ENTRY 🚗
     public Ticket createEntry(Long vehiculeId, Long placeId) {
 
         Vehicule vehicule = vehiculeRepository.findById(vehiculeId)
@@ -55,12 +55,10 @@ public class TicketService {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new RuntimeException("Place not found"));
 
-        // ✅ check قبل
         if (place.getStatut() == StatutPlace.OCCUPEE) {
             throw new RuntimeException("Place already occupied");
         }
 
-        // ✅ update place
         place.setStatut(StatutPlace.OCCUPEE);
         placeRepository.save(place);
 
@@ -73,7 +71,7 @@ public class TicketService {
         return repository.save(ticket);
     }
 
-    // ✅ EXIT 🚗
+    // EXIT 🚗 (FIXED)
     public Ticket exit(Long id) {
 
         Ticket ticket = repository.findById(id)
@@ -83,6 +81,7 @@ public class TicketService {
             throw new RuntimeException("Ticket already closed");
         }
 
+        // time
         ticket.setHeureSortie(LocalDateTime.now());
 
         Duration duration = Duration.between(
@@ -93,33 +92,43 @@ public class TicketService {
         double hours = duration.toMinutes() / 60.0;
         if (hours < 1) hours = 1;
 
+        // price (safe)
         double pricePerHour = 3.0;
+
+        if (ticket.getPlace() != null && ticket.getPlace().getParking() != null) {
+            pricePerHour = ticket.getPlace().getParking().getPrixParHeure();
+        }
+
         double montant = hours * pricePerHour;
 
-        String type = ticket.getVehicule().getType().getType();
-// الأولى = entity
-// الثانية = String (CAR / BIKE ...)
+        // type (safe)
+        if (ticket.getVehicule() != null && ticket.getVehicule().getType() != null) {
 
-        if ("TRUCK".equals(type)) {
-            montant *= 2;
-        } else if ("BIKE".equals(type)) {
-            montant *= 0.5;
-        } else if ("EV".equals(type)) {
-            montant *= 0.8;
+            String type = ticket.getVehicule().getType().getType();
+
+            if ("TRUCK".equals(type)) {
+                montant *= 2;
+            } else if ("BIKE".equals(type)) {
+                montant *= 0.5;
+            } else if ("EV".equals(type)) {
+                montant *= 0.8;
+            }
         }
 
         ticket.setMontant(montant);
         ticket.setStatut(StatutTicket.FERME);
 
-        //  place
-        Place place = ticket.getPlace();
-        place.setStatut(StatutPlace.LIBRE);
-        placeRepository.save(place);
+        // free place
+        if (ticket.getPlace() != null) {
+            Place place = ticket.getPlace();
+            place.setStatut(StatutPlace.LIBRE);
+            placeRepository.save(place);
+        }
 
         return repository.save(ticket);
     }
 
-    //  DELETE
+    // DELETE
     public void delete(Long id) {
         repository.deleteById(id);
     }
