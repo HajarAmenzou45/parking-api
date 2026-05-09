@@ -2,18 +2,16 @@ package com.smartparking.parking_api.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 
-@Component
 public class JwtUtil {
 
-    private final String SECRET = "mysecretkeymysecretkeymysecretkey123";
-    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    private static final String SECRET = "mysecretkeymysecretkeymysecretkey123";
+    private static final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    public String generateToken(String email){
+    public static String generateToken(String email){
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
@@ -22,7 +20,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String extractEmail(String token){
+    public static String extractEmail(String token){
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -31,7 +29,7 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    public boolean validateToken(String token){
+    public static boolean validateToken(String token){
         try{
             Jwts.parserBuilder()
                     .setSigningKey(key)

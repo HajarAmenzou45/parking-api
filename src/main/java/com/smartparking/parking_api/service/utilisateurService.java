@@ -6,6 +6,7 @@ import com.smartparking.parking_api.entity.utilisateur;
 import com.smartparking.parking_api.enums.RoleUtilisateur;
 import com.smartparking.parking_api.repository.utilisateurRepository;
 import com.smartparking.parking_api.security.JwtUtil;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +17,14 @@ public class utilisateurService {
 
     private final utilisateurRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     public utilisateurService(utilisateurRepository repository,
-                              PasswordEncoder passwordEncoder,
-                              JwtUtil jwtUtil) {
+                              PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
     }
 
+    // REGISTER
     public utilisateur register(RegisterRequest request){
 
         if(repository.findByEmail(request.getEmail()).isPresent()){
@@ -41,6 +40,7 @@ public class utilisateurService {
         return repository.save(u);
     }
 
+    // LOGIN
     public String login(LoginRequest request){
 
         utilisateur user = repository.findByEmail(request.getEmail())
@@ -50,7 +50,7 @@ public class utilisateurService {
             throw new RuntimeException("Password incorrect");
         }
 
-        return jwtUtil.generateToken(user.getEmail());
+        return JwtUtil.generateToken(user.getEmail());
     }
 
     public List<utilisateur> getAll(){

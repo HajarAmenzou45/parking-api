@@ -12,4 +12,12 @@ public class LoginRequest {
     public String getMotDePasse() {
         return motDePasse;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
+    }
 }

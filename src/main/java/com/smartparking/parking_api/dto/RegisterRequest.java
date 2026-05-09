@@ -17,4 +17,16 @@ public class RegisterRequest {
     public String getNomComplet() {
         return nomComplet;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setMotDePasse(String motDePasse) {
+        this.motDePasse = motDePasse;
+    }
+
+    public void setNomComplet(String nomComplet) {
+        this.nomComplet = nomComplet;
+    }
 }
