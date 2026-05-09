@@ -6,7 +6,6 @@ import com.smartparking.parking_api.entity.utilisateur;
 import com.smartparking.parking_api.enums.RoleUtilisateur;
 import com.smartparking.parking_api.repository.utilisateurRepository;
 import com.smartparking.parking_api.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,22 +14,28 @@ import java.util.List;
 @Service
 public class utilisateurService {
 
-    @Autowired
-    private utilisateurRepository repository;
+    private final utilisateurRepository repository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public utilisateurService(utilisateurRepository repository,
+                              PasswordEncoder passwordEncoder,
+                              JwtUtil jwtUtil) {
+        this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+    }
 
     public utilisateur register(RegisterRequest request){
 
-        if(repository.findByEmail(request.email).isPresent()){
+        if(repository.findByEmail(request.getEmail()).isPresent()){
             throw new RuntimeException("Email déjà utilisé");
         }
 
         utilisateur u = new utilisateur();
-        u.setEmail(request.email);
-        u.setNomComplet(request.nomComplet);
-        u.setMotDePasse(passwordEncoder.encode(request.motDePasse));
+        u.setEmail(request.getEmail());
+        u.setNomComplet(request.getNomComplet());
+        u.setMotDePasse(passwordEncoder.encode(request.getMotDePasse()));
         u.setRole(RoleUtilisateur.CLIENT);
 
         return repository.save(u);
@@ -38,14 +43,14 @@ public class utilisateurService {
 
     public String login(LoginRequest request){
 
-        utilisateur user = repository.findByEmail(request.email)
+        utilisateur user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if(!passwordEncoder.matches(request.motDePasse, user.getMotDePasse())){
+        if(!passwordEncoder.matches(request.getMotDePasse(), user.getMotDePasse())){
             throw new RuntimeException("Password incorrect");
         }
 
-        return JwtUtil.generateToken(user.getEmail());
+        return jwtUtil.generateToken(user.getEmail());
     }
 
     public List<utilisateur> getAll(){

@@ -1,31 +1,53 @@
 package com.smartparking.parking_api.security;
 
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
-public class JwtFilter implements Filter {
+public class JwtFilter extends OncePerRequestFilter {
+
+    private final JwtUtil jwtUtil;
+
+    public JwtFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        HttpServletRequest req = (HttpServletRequest) request;
+        String authHeader = request.getHeader("Authorization");
 
-        String header = req.getHeader("Authorization");
+        if(authHeader != null && authHeader.startsWith("Bearer ")){
 
-        if(header != null && header.startsWith("Bearer ")){
-            String token = header.substring(7);
+            String token = authHeader.substring(7);
 
-            if(JwtUtil.validateToken(token)){
-                String email = JwtUtil.extractEmail(token);
-                req.setAttribute("email", email);
+            if(jwtUtil.validateToken(token)){
+
+                String email = jwtUtil.extractEmail(token);
+
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(
+                                email,
+                                null,
+                                Collections.emptyList()
+                        );
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
 
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }
