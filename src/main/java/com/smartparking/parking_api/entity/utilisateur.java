@@ -15,13 +15,14 @@ public class utilisateur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String motDePasse;
 
     private String nomComplet;
 
     @Enumerated(EnumType.STRING)
     private RoleUtilisateur role;
-
 }

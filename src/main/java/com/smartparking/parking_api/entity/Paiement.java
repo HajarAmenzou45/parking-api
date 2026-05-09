@@ -6,25 +6,21 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Paiement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Enumerated(EnumType.STRING)
-    private MethodePayment method;
-
     private Double montant;
+
+    @Enumerated(EnumType.STRING)
+    private MethodePayment methode;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus statut;
 
     @OneToOne
-    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 }

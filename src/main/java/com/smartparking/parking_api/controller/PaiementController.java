@@ -1,58 +1,28 @@
 package com.smartparking.parking_api.controller;
 
 import com.smartparking.parking_api.entity.Paiement;
-import com.smartparking.parking_api.enums.PaymentStatus;
 import com.smartparking.parking_api.enums.MethodePayment;
 import com.smartparking.parking_api.service.PaiementService;
-
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/paiements")
-@CrossOrigin
 public class PaiementController {
 
-    private final PaiementService paiementService;
+    private final PaiementService service;
 
-    public PaiementController(PaiementService paiementService) {
-        this.paiementService = paiementService;
+    public PaiementController(PaiementService service) {
+        this.service = service;
     }
 
-    // 🔹 GET ALL
-    @GetMapping
-    public List<Paiement> getAll(){
-        return paiementService.getAll();
+    @PostMapping("/pay/{ticketId}")
+    public Paiement payer(@PathVariable Integer ticketId,
+                          @RequestParam MethodePayment methode){
+        return service.payer(ticketId, methode);
     }
 
-    // 🔹 GET BY ID
-    @GetMapping("/{id}")
-    public Paiement getById(@PathVariable Integer id){
-        return paiementService.getPaiementById(id);
-    }
-
-    // 💰 PAYMENT (clean version)
-    @PostMapping("/pay")
-    public Paiement pay(@RequestParam Integer ticketId,
-                        @RequestParam MethodePayment method){
-
-        return paiementService.pay(ticketId, method);
-    }
-
-    // 🔹 CONFIRM PAYMENT (pour EN_LIGNE)
     @PutMapping("/confirm/{id}")
-    public Paiement confirm(@PathVariable Integer id){
-
-        Paiement paiement = paiementService.getPaiementById(id);
-        paiement.setStatut(PaymentStatus.PAYE);
-
-        return paiementService.save(paiement);
-    }
-
-    // 🔹 DELETE
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id){
-        paiementService.delete(id);
+    public Paiement confirmer(@PathVariable Integer id){
+        return service.confirmer(id);
     }
 }

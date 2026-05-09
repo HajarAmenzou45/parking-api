@@ -5,21 +5,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-
-
 @RestController
 @RequestMapping("/api/dashboard")
 public class DashboardController {
 
-    private final DashboardService dashboardService;
+    private final DashboardService service;
 
-    public DashboardController(DashboardService dashboardService) {
-        this.dashboardService = dashboardService;
+    public DashboardController(DashboardService service) {
+        this.service = service;
     }
 
-    @GetMapping("/parking/{id}")
-    public Map<String, Object> getStats(@PathVariable Long id){
-        return dashboardService.getStatsByParking(id);
+    @GetMapping("/{parkingId}")
+    public Map<String, Object> getStats(@PathVariable Long parkingId){
+        return service.getStatsByParking(parkingId);
     }
-
 }

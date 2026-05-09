@@ -7,34 +7,25 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private LocalDateTime heureEntree;
     private LocalDateTime heureSortie;
 
+    private Double duree; // en heures
     private Double montant;
 
     @Enumerated(EnumType.STRING)
     private StatutTicket statut;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "vehicule_id")
-    private Vehicule vehicule;
+    @ManyToOne
+    private utilisateur utilisateur;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "place_id")
+    @ManyToOne
     private Place place;
-
-    @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
-    private Paiement paiement;
-
-   
 }

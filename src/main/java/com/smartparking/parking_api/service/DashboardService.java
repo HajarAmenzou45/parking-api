@@ -29,9 +29,10 @@ public class DashboardService {
         long totalVehicules = ticketRepository.countCurrentVehicules(parkingId);
 
         Double revenue = paiementRepository.getTodayRevenueByParking(parkingId);
-        double dailyRevenue = revenue != null ? revenue : 0;
+        double dailyRevenue = revenue != null ? revenue : 0.0;
 
-        long availableSpots = placeRepository.countByParkingIdAndStatut(parkingId, StatutPlace.LIBRE);
+        long availableSpots = placeRepository
+                .countByParkingIdAndStatut(parkingId, StatutPlace.LIBRE);
 
         long totalSpots = placeRepository.countByParkingId(parkingId);
 
