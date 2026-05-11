@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.smartparking.parking_api.dto.HistoryDTO;
+import com.smartparking.parking_api.dto.UserStatsDTO;
 
 @RestController
 @RequestMapping("/api/utilisateurs")
@@ -46,5 +48,15 @@ public class utilisateurController {
                 auth.getName(),
                 request
         );
+    }
+    @GetMapping("/history")
+    public List<HistoryDTO> history(Authentication auth){
+
+        return service.getHistory(auth.getName());
+    }
+    @GetMapping("/stats")
+    public UserStatsDTO stats(Authentication auth){
+
+        return service.getStats(auth.getName());
     }
 }
