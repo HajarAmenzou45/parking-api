@@ -17,5 +17,10 @@ public interface PaiementRepository extends JpaRepository<Paiement, Integer> {
     """)
     Double getTodayRevenueByParking(Long parkingId);
 
-    List<Paiement> findByTicketUtilisateur(utilisateur utilisateur);
+    @Query("""
+        SELECT p
+        FROM Paiement p
+        WHERE p.ticket.utilisateur = :utilisateur
+    """)
+    List<Paiement> findUserHistory(utilisateur utilisateur);
 }

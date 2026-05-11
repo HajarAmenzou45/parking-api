@@ -135,7 +135,7 @@ public class utilisateurService {
                         new RuntimeException("User not found"));
 
         List<Paiement> paiements =
-                paiementRepository.findByTicketUtilisateur(user);
+                paiementRepository.findUserHistory(user);
 
         List<HistoryDTO> history = new ArrayList<>();
 
@@ -182,7 +182,7 @@ public class utilisateurService {
                 vehiculeRepository.findByUtilisateur(user).size();
 
         dto.paiements =
-                paiementRepository.findByTicketUtilisateur(user).size();
+                paiementRepository.findUserHistory(user).size();
 
         return dto;
     }
