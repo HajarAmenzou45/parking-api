@@ -112,4 +112,33 @@ public class NotificationService {
 
         notificationRepository.deleteAll(notifications);
     }
+    // AUTO CREATE NOTIFICATION
+    public void autoCreate(
+            utilisateur user,
+            String type,
+            String titre,
+            String message
+    ){
+
+        Notification notification =
+                new Notification();
+
+        notification.setUtilisateur(user);
+
+        notification.setType(type);
+
+        notification.setTitre(titre);
+
+        notification.setMessage(message);
+
+        notification.setDateCreation(
+                java.time.LocalDateTime.now()
+        );
+
+        notification.setStatut(
+                NotificationStatus.NON_LU
+        );
+
+        notificationRepository.save(notification);
+    }
 }
