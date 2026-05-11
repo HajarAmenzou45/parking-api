@@ -23,6 +23,17 @@ public class utilisateur {
 
     private String nomComplet;
 
+    @Column(unique = true)
+    private String username;
+
+    private String telephone;
+
+    private String genre;
+
+    private String photoProfil;
+
+    private String carteBancaire;
+
     @Enumerated(EnumType.STRING)
     private RoleUtilisateur role;
 }

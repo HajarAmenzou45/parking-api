@@ -9,6 +9,7 @@ import com.smartparking.parking_api.security.JwtUtil;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.smartparking.parking_api.dto.UpdateProfileRequest;
 
 import java.util.List;
 
@@ -64,5 +65,22 @@ public class utilisateurService {
     public utilisateur getCurrentUser(String email){
         return repository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+    public utilisateur updateProfile(
+            String email,
+            UpdateProfileRequest request
+    ){
+
+        utilisateur user = repository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        user.setNomComplet(request.nomComplet);
+        user.setUsername(request.username);
+        user.setTelephone(request.telephone);
+        user.setGenre(request.genre);
+        user.setCarteBancaire(request.carteBancaire);
+
+        return repository.save(user);
     }
 }
