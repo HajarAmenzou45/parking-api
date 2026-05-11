@@ -5,7 +5,7 @@ import com.smartparking.parking_api.dto.LoginRequest;
 import com.smartparking.parking_api.dto.RegisterRequest;
 import com.smartparking.parking_api.dto.UpdateProfileRequest;
 import com.smartparking.parking_api.dto.UserStatsDTO;
-
+import com.smartparking.parking_api.dto.ChangePasswordRequest;
 import com.smartparking.parking_api.entity.Paiement;
 import com.smartparking.parking_api.entity.utilisateur;
 
@@ -185,5 +185,34 @@ public class utilisateurService {
                 paiementRepository.findUserHistory(user).size();
 
         return dto;
+    }
+    public void changePassword(
+            String email,
+            ChangePasswordRequest request
+    ){
+
+        utilisateur user = repository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        boolean correct =
+                passwordEncoder.matches(
+                        request.ancienMotDePasse,
+                        user.getMotDePasse()
+                );
+
+        if(!correct){
+            throw new RuntimeException(
+                    "Ancien mot de passe incorrect"
+            );
+        }
+
+        user.setMotDePasse(
+                passwordEncoder.encode(
+                        request.nouveauMotDePasse
+                )
+        );
+
+        repository.save(user);
     }
 }

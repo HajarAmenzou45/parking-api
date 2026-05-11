@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import com.smartparking.parking_api.dto.HistoryDTO;
 import com.smartparking.parking_api.dto.UserStatsDTO;
-
+import com.smartparking.parking_api.dto.ChangePasswordRequest;
 @RestController
 @RequestMapping("/api/utilisateurs")
 public class utilisateurController {
@@ -58,5 +58,18 @@ public class utilisateurController {
     public UserStatsDTO stats(Authentication auth){
 
         return service.getStats(auth.getName());
+    }
+    @PutMapping("/change-password")
+    public String changePassword(
+            Authentication auth,
+            @RequestBody ChangePasswordRequest request
+    ){
+
+        service.changePassword(
+                auth.getName(),
+                request
+        );
+
+        return "Mot de passe modifié";
     }
 }
