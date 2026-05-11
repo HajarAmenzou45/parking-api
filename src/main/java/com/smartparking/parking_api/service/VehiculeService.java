@@ -8,6 +8,7 @@ import com.smartparking.parking_api.repository.utilisateurRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class VehiculeService {
@@ -52,5 +53,58 @@ public class VehiculeService {
     //  DELETE
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    public List<Vehicule> getUserVehicles(String email){
+
+        utilisateur user = utilisateurRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        return repository.findByUtilisateur(user);
+    }
+
+    public Vehicule addVehicle(String email, Vehicule vehicule){
+
+        utilisateur user = utilisateurRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        String plaque = vehicule.getNumeroPlaque();
+
+        if(plaque == null || plaque.isBlank()){
+            throw new RuntimeException("Plaque obligatoire");
+        }
+
+        // validation simple plaque
+        boolean valid = Pattern.matches(
+                "^[A-Za-z0-9\\- ]+$",
+                plaque
+        );
+
+        if(!valid){
+            throw new RuntimeException("Plaque invalide");
+        }
+
+        vehicule.setUtilisateur(user);
+
+        return repository.save(vehicule);
+    }
+
+    public void deleteVehicle(String email, Long id){
+
+        utilisateur user = utilisateurRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        Vehicule vehicule = repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Vehicule not found"));
+
+        if(!vehicule.getUtilisateur().getId().equals(user.getId())){
+            throw new RuntimeException("Accès refusé");
+        }
+
+        repository.delete(vehicule);
     }
 }
