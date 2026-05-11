@@ -22,4 +22,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
             String email,
             StatutTicket statut
     );
+    long count();
 }

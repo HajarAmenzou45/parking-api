@@ -23,4 +23,10 @@ public interface PaiementRepository extends JpaRepository<Paiement, Integer> {
         WHERE p.ticket.utilisateur = :utilisateur
     """)
     List<Paiement> findUserHistory(utilisateur utilisateur);
+    @Query("""
+    SELECT COALESCE(SUM(p.montant), 0)
+    FROM Paiement p
+    WHERE p.statut = 'PAYE'
+""")
+    Double getTotalRevenue();
 }
