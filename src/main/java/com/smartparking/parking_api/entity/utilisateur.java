@@ -1,8 +1,14 @@
 package com.smartparking.parking_api.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.smartparking.parking_api.enums.RoleUtilisateur;
+
 import jakarta.persistence.*;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -18,6 +24,7 @@ public class utilisateur {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
     private String motDePasse;
 
