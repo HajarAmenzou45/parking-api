@@ -10,6 +10,13 @@ import com.smartparking.parking_api.entity.Paiement;
 import com.smartparking.parking_api.entity.utilisateur;
 
 import com.smartparking.parking_api.enums.RoleUtilisateur;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.io.IOException;
 
 import com.smartparking.parking_api.repository.PaiementRepository;
 import com.smartparking.parking_api.repository.ReservationRepository;
@@ -214,5 +221,60 @@ public class utilisateurService {
         );
 
         repository.save(user);
+    }
+    // UPLOAD PROFILE PHOTO
+    public utilisateur uploadPhoto(
+            String email,
+            MultipartFile file
+    ){
+
+        utilisateur user = repository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        try {
+
+            String uploadDir = "uploads/";
+
+            Files.createDirectories(
+                    Paths.get(uploadDir)
+            );
+
+            String fileName =
+                    System.currentTimeMillis()
+                            + "_"
+                            + file.getOriginalFilename();
+
+            Path path = Paths.get(
+                    uploadDir + fileName
+            );
+
+            Files.write(
+                    path,
+                    file.getBytes()
+            );
+
+            user.setPhotoProfil(fileName);
+
+            return repository.save(user);
+
+        } catch (IOException e){
+
+            throw new RuntimeException(
+                    "Erreur upload photo"
+            );
+        }
+    }
+
+    // DELETE PROFILE PHOTO
+    public utilisateur deletePhoto(String email){
+
+        utilisateur user = repository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        user.setPhotoProfil(null);
+
+        return repository.save(user);
     }
 }

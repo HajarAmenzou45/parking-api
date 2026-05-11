@@ -14,6 +14,7 @@ import java.util.List;
 import com.smartparking.parking_api.dto.HistoryDTO;
 import com.smartparking.parking_api.dto.UserStatsDTO;
 import com.smartparking.parking_api.dto.ChangePasswordRequest;
+import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/utilisateurs")
 public class utilisateurController {
@@ -71,5 +72,26 @@ public class utilisateurController {
         );
 
         return "Mot de passe modifié";
+    }
+    @PostMapping("/profile/photo")
+    public utilisateur uploadPhoto(
+            Authentication auth,
+            @RequestParam("file") MultipartFile file
+    ){
+
+        return service.uploadPhoto(
+                auth.getName(),
+                file
+        );
+    }
+
+    @DeleteMapping("/profile/photo")
+    public utilisateur deletePhoto(
+            Authentication auth
+    ){
+
+        return service.deletePhoto(
+                auth.getName()
+        );
     }
 }
