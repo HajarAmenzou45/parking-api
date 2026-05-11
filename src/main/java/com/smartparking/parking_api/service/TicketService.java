@@ -48,7 +48,7 @@ public class TicketService {
         return ticketRepo.save(t);
     }
 
-    // 🚪 EXIT + CALCUL
+    //  EXIT + CALCUL
     public Ticket sortir(Integer ticketId){
 
         Ticket t = ticketRepo.findById(ticketId)
@@ -72,5 +72,14 @@ public class TicketService {
         placeRepo.save(p);
 
         return ticketRepo.save(t);
+    }
+    public Ticket getActiveTicket(String email){
+
+        return ticketRepo
+                .findByUtilisateurEmailAndStatut(
+                        email,
+                        StatutTicket.OUVERT
+                )
+                .orElse(null);
     }
 }

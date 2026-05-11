@@ -67,7 +67,7 @@ public class ParkingController {
         return parkingService.getNearbyParkings(lat, lng, type);
     }
 
-    // ✅ TEST
+    // TEST
     @GetMapping("/test")
     public String test(){
         return "API WORKING";

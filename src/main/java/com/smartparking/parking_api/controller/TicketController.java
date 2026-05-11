@@ -24,4 +24,10 @@ public class TicketController {
     public Ticket exit(@PathVariable Integer id){
         return service.sortir(id);
     }
+
+    @GetMapping("/active")
+    public Ticket active(Authentication auth){
+
+        return service.getActiveTicket(auth.getName());
+    }
 }
