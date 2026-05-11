@@ -1,5 +1,6 @@
 package com.smartparking.parking_api.controller;
 
+import com.smartparking.parking_api.dto.PaymentSummaryDTO;
 import com.smartparking.parking_api.entity.Paiement;
 import com.smartparking.parking_api.enums.MethodePayment;
 import com.smartparking.parking_api.service.PaiementService;
@@ -24,5 +25,12 @@ public class PaiementController {
     @PutMapping("/confirm/{id}")
     public Paiement confirmer(@PathVariable Integer id){
         return service.confirmer(id);
+    }
+
+    @GetMapping("/summary")
+    public PaymentSummaryDTO summary(
+            @RequestParam Integer ticketId
+    ){
+        return service.summary(ticketId);
     }
 }

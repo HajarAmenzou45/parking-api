@@ -3,7 +3,7 @@ package com.smartparking.parking_api.service;
 import com.smartparking.parking_api.entity.*;
 import com.smartparking.parking_api.enums.*;
 import com.smartparking.parking_api.repository.*;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service;import com.smartparking.parking_api.dto.PaymentSummaryDTO;
 
 @Service
 public class PaiementService {
@@ -43,5 +43,25 @@ public class PaiementService {
         p.setStatut(PaymentStatus.PAYE);
 
         return paiementRepo.save(p);
+    }
+    public PaymentSummaryDTO summary(Integer ticketId){
+
+        Ticket ticket = ticketRepo.findById(ticketId)
+                .orElseThrow(() ->
+                        new RuntimeException("Ticket introuvable"));
+
+        PaymentSummaryDTO dto = new PaymentSummaryDTO();
+
+        dto.montant = ticket.getMontant();
+        dto.duree = ticket.getDuree();
+
+        dto.parking = ticket.getPlace()
+                .getParking()
+                .getNom();
+
+        dto.place = ticket.getPlace()
+                .getNumero();
+
+        return dto;
     }
 }
