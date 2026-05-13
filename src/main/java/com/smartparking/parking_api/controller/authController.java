@@ -23,4 +23,9 @@ public class authController {
         String token = service.login(request);
         return new AuthResponse(token);
     }
+    @PostMapping("/logout")
+    public String logout() {
+
+        return "Déconnexion réussie";
+    }
 }
