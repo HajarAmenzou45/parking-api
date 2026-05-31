@@ -33,4 +33,8 @@ public class PaiementController {
     ){
         return service.summary(ticketId);
     }
+    @GetMapping("/{id}")
+    public Paiement getById(@PathVariable Integer id){
+        return service.getById(id);
+    }
 }

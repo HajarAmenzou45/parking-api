@@ -30,4 +30,9 @@ public class TicketController {
 
         return service.getActiveTicket(auth.getName());
     }
+
+    @GetMapping("/{id}")
+    public Ticket getById(@PathVariable Integer id){
+        return service.getById(id);
+    }
 }

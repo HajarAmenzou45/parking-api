@@ -111,4 +111,12 @@ public class PaiementService {
 
         return dto;
     }
+    public Paiement getById(Integer id){
+
+        return paiementRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Paiement not found"
+                        ));
+    }
 }

@@ -134,4 +134,12 @@ public class TicketService {
                 )
                 .orElse(null);
     }
+    public Ticket getById(Integer id){
+
+        return ticketRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Ticket not found"
+                        ));
+    }
 }
