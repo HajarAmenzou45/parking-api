@@ -16,8 +16,16 @@ public class TicketController {
     }
 
     @PostMapping("/entry")
-    public Ticket entry(@RequestParam Long placeId, Authentication auth){
-        return service.entrer(placeId, auth.getName());
+    public Ticket entry(
+            @RequestParam Long placeId,
+            @RequestParam Long vehiculeId,
+            Authentication auth
+    ){
+        return service.entrer(
+                placeId,
+                vehiculeId,
+                auth.getName()
+        );
     }
 
     @PutMapping("/exit/{id}")

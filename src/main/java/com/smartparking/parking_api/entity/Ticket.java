@@ -28,4 +28,8 @@ public class Ticket {
 
     @ManyToOne
     private Place place;
+
+    @ManyToOne
+    @JoinColumn(name = "vehicule_id")
+    private Vehicule vehicule;
 }

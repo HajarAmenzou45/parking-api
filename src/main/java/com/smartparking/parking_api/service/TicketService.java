@@ -1,10 +1,8 @@
 package com.smartparking.parking_api.service;
 
 import com.smartparking.parking_api.entity.*;
-
 import com.smartparking.parking_api.enums.StatutPlace;
 import com.smartparking.parking_api.enums.StatutTicket;
-
 import com.smartparking.parking_api.repository.*;
 
 import org.springframework.stereotype.Service;
@@ -19,33 +17,34 @@ public class TicketService {
     private final PlaceRepository placeRepo;
     private final utilisateurService userService;
     private final NotificationService notificationService;
+    private final VehiculeRepository vehiculeRepo;
 
     public TicketService(
             TicketRepository ticketRepo,
             PlaceRepository placeRepo,
             utilisateurService userService,
-            NotificationService notificationService
+            NotificationService notificationService,
+            VehiculeRepository vehiculeRepo
     ) {
         this.ticketRepo = ticketRepo;
         this.placeRepo = placeRepo;
         this.userService = userService;
         this.notificationService = notificationService;
+        this.vehiculeRepo = vehiculeRepo;
     }
 
     // ENTRY
     public Ticket entrer(
             Long placeId,
+            Long vehiculeId,
             String email
-    ){
+    ) {
 
         Place place = placeRepo.findById(placeId)
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Place not found"
-                        ));
+                        new RuntimeException("Place not found"));
 
-        if(place.getStatut() != StatutPlace.RESERVEE){
-
+        if (place.getStatut() != StatutPlace.RESERVEE) {
             throw new RuntimeException(
                     "Place doit être réservée"
             );
@@ -54,20 +53,25 @@ public class TicketService {
         utilisateur user =
                 userService.getCurrentUser(email);
 
+        Vehicule vehicule =
+                vehiculeRepo.findById(vehiculeId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Vehicule not found"
+                                ));
+
         // UPDATE PLACE STATUS
         place.setStatut(StatutPlace.OCCUPEE);
-
         placeRepo.save(place);
 
         // CREATE TICKET
         Ticket t = new Ticket();
 
         t.setPlace(place);
-
         t.setUtilisateur(user);
+        t.setVehicule(vehicule);
 
         t.setHeureEntree(LocalDateTime.now());
-
         t.setStatut(StatutTicket.OUVERT);
 
         // AUTO NOTIFICATION
@@ -84,7 +88,7 @@ public class TicketService {
     }
 
     // EXIT + CALCUL
-    public Ticket sortir(Integer ticketId){
+    public Ticket sortir(Integer ticketId) {
 
         Ticket t = ticketRepo.findById(ticketId)
                 .orElseThrow(() ->
@@ -125,7 +129,7 @@ public class TicketService {
     }
 
     // ACTIVE TICKET
-    public Ticket getActiveTicket(String email){
+    public Ticket getActiveTicket(String email) {
 
         return ticketRepo
                 .findByUtilisateurEmailAndStatut(
@@ -134,7 +138,9 @@ public class TicketService {
                 )
                 .orElse(null);
     }
-    public Ticket getById(Integer id){
+
+    // GET BY ID
+    public Ticket getById(Integer id) {
 
         return ticketRepo.findById(id)
                 .orElseThrow(() ->
