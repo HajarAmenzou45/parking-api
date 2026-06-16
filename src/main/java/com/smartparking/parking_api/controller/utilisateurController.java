@@ -15,6 +15,15 @@ import com.smartparking.parking_api.dto.HistoryDTO;
 import com.smartparking.parking_api.dto.UserStatsDTO;
 import com.smartparking.parking_api.dto.ChangePasswordRequest;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 @RestController
 @RequestMapping("/api/utilisateurs")
 public class utilisateurController {
@@ -83,6 +92,24 @@ public class utilisateurController {
                 auth.getName(),
                 file
         );
+    }
+
+    @GetMapping("/profile/photo/{filename}")
+    public ResponseEntity<Resource> getPhoto(
+            @PathVariable String filename
+    ) throws IOException {
+
+        Path path = Paths.get("uploads").resolve(filename);
+
+        Resource resource = new UrlResource(path.toUri());
+
+        if (!resource.exists()) {
+            throw new RuntimeException("Photo introuvable");
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
     }
 
     @DeleteMapping("/profile/photo")
