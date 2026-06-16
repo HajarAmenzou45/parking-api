@@ -1,6 +1,5 @@
 package com.smartparking.parking_api.security;
 
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -13,6 +12,8 @@ public class CorsConfig implements WebMvcConfigurer {
 
         registry.addMapping("/api/**")
                 .allowedOrigins(
+                        "http://127.0.0.1:5500",
+                        "http://localhost:5500",
                         "http://127.0.0.1:5001",
                         "http://localhost:5001"
                 )
@@ -23,10 +24,7 @@ public class CorsConfig implements WebMvcConfigurer {
                         "DELETE",
                         "OPTIONS"
                 )
-                .allowedHeaders(
-                        "Content-Type",
-                        "Authorization"
-                )
+                .allowedHeaders("*")
                 .allowCredentials(true);
     }
 }
